@@ -1,23 +1,25 @@
-🧠 NeuroVision
+# 🧠 NeuroVision
 
 A Deep Learning Web Application for Parkinson’s Detection via Eye Movement Analysis
 
 ## NeuroVision Interface
 ![NeuroVision Hero Section](./hero%20section.png)
 
-🌟 Overview
+# 🌟 Overview
 NeuroVision is a Flask-based web application that uses a deep learning model to detect Parkinson’s disease from eye movement images. Built for neurologists and medical researchers, it provides:
 
-⚡ Real-time AI predictions: Instantly classify images as Parkinson’s Detected or No Parkinson’s
+# ⚡ Real-time AI predictions: Instantly classify images as Parkinson’s Detected or No Parkinson’s
 
-🔐 User authentication: Secure login/signup using a SQLite database
+# 🔐 User authentication: Secure login/signup using a SQLite database
 
-🧭 Neurologist locator: Search and locate specialists via an interactive map
+# 🧭 Neurologist locator: Search and locate specialists via an interactive map
 
-💻 Modern UI: Responsive single-page interface with a sleek glassmorphism design
+# 💻 Modern UI: Responsive single-page interface with a sleek glassmorphism design
 
-🔬 Developed as part of a research project to bridge AI and clinical diagnosis.
+# 🔬 Developed as part of a research project to bridge AI and clinical diagnosis.
 
+
+# 🛠️ Tech Stack
 | Component     | Technologies Used                                                  |
 | ------------- | ------------------------------------------------------------------ |
 | **Frontend**  | HTML5, CSS3 (Flexbox/Grid), JavaScript (Vanilla), Leaflet.js (Map) |
@@ -28,37 +30,31 @@ NeuroVision is a Flask-based web application that uses a deep learning model to 
 
 
 
+
 🚀 Features
-1. 🧑‍💻 User-Friendly Interface
+# 1. 🧑‍💻 User-Friendly Interface
 Single-page layout for seamless experience
 
 Drag-and-drop image uploads with preview
 
 Animated modals for login and signup
 
-2. 🤖 AI-Powered Detection
+# 2. 🤖 AI-Powered Detection
 Upload eye movement images for instant predictions
 
 CNN model trained on preprocessed data (resizing, normalization)
 
 Displays prediction confidence and visual feedback
 
-3. 🧭 Neurologist Finder
+# 3. 🧭 Neurologist Finder
 Interactive, searchable table of neurologists
 
 Embedded Leaflet.js map with clickable location markers
 
-4. 🔒 Secure & Scalable
+# 4. 🔒 Secure & Scalable
 Passwords hashed with Bcrypt
 
 Session handling using localStorage
 
 Modular Flask backend for future scalability
-
-4. Secure & Scalable
-Bcrypt password hashing.
-
-Session management via localStorage.
-
-Modular Flask backend for easy scaling.
 
