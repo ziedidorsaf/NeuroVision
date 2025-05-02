@@ -1,1 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroVision</title>
+   
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <style>
+        #map {
+    height: 600px;  /* Hauteur augmentée */
+    width: 90%;     /* Largeur relative */
+    margin: 20px auto; /* Centrage */
+    border-radius: 10px; /* Coins arrondis */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Ombre légère */
+    border: 1px solid #ddd; /* Bordure subtile */
+}
+
+
+    </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+
+   
+</head>
+<body>
+
+    <div class="hero">
+        <nav>
+            <div class="brand-name">NeuroVision</div>
+            <button class="login-btn" onclick="showModal('loginModal')">LOGIN</button>
+            <a href="#aboutSection" onclick="scrollToAbout(event)">About</a>
+            <a href="#servicesSection" onclick=scrollToServices(event)>Services</a>
+        </nav>
+
+
+        <div class="hero-content">
+            <h1>AI-Powered Parkinson's Disease Detection</h1>
+            <p>Upload your photo, and let our AI analyze it to determine if you show signs of Parkinson's disease</p>
+
+
+            <!-- Bouton d'upload d'image -->
+            <label class="upload-btn">
+                Upload Your Photo
+                <input type="file" id="image-upload" accept="image/*" style="display: none" onchange="handlePhotoUpload(event)">
+            </label>
+
+
+            <!-- Zone pour afficher l'image téléchargée -->
+            <div class="image-preview">
+                <img id="uploaded-image" src="#" alt="Uploaded Image" style="display: none; max-width: 100%; height: auto; margin-top: 1rem;">
+            </div>
+
+
+            <!-- Zone pour afficher le résultat de la prédiction -->
+            <div id="prediction-result"></div>
+
+
+            <!-- Indicateur de chargement (spinner) -->
+            <div id="loading-spinner" class="loading-spinner" style="display: none;">
+                <div class="spinner"></div>
+                <p>Processing image...</p>
+            </div>
+        </div>
+    </div>
+
+
+    <section id="aboutSection" class="about-section">
+        <div class="about-content">
+            <h2>About NeuroVision</h2>
+            <p>Welcome to NeuroVision, where we use advanced AI technology to help detect Parkinson's disease from images of your eyes. Our platform provides personalized insights based on your unique features, giving you valuable information and directing you to specialists for further consultation. Empowering you with early detection, NeuroVision bridges the gap between healthcare and technology.</p>
+        </div>
+    </section>
+
+
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <h2 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1.5rem;">Login</h2>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="text" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label>Password:</label>
+                    <div class="password-container">
+                        <input type="password" name="password" required>
+                        <i data-lucide="eye" class="password-toggle" onclick="togglePassword(this)"></i>
+                    </div>
+                </div>
+                <button type="submit" class="upload-btn" style="width: 100%">Sign In</button>
+                <p style="text-align: center; margin-top: 1rem">
+                    Don't have an account?
+                    <button type="button" onclick="switchModal('loginModal', 'signupModal')"
+                            style="color: #2563eb; background: none; border: none; cursor: pointer">
+                        Sign Up
+                    </button>
+                </p>
+            </form>
+        </div>
+    </div>
+
+
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <h2 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1.5rem;">Sign Up</h2>
+            <form id="signupForm" onsubmit="handleSignup(event)">
+                <div class="form-group">
+                    <label>Username:</label>
+                    <input type="text" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label>Password:</label>
+                    <div class="password-container">
+                        <input type="password" name="password" required>
+                        <i data-lucide="eye" class="password-toggle" onclick="togglePassword(this)"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Confirm Password:</label>
+                    <div class="password-container">
+                        <input type="password" name="confirmPassword" required>
+                        <i data-lucide="eye" class="password-toggle" onclick="togglePassword(this)"></i>
+                    </div>
+                </div>
+                <button type="submit" class="upload-btn" style="width: 100%">Sign Up</button>
+            </form>
+        </div>
+    </div>
+
+
+    <div class="services-section" id="servicesSection">
+        <div class="services-container">
+            <h1 class="services-title">Our Services</h1>
+            <p class="services-subtitle">AI Diagnosis and Doctor Finder for Parkinson's Disease</p>
+           
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h2>AI-Powered Parkinson's Detection</h2>
+                    <p>Upload your photo and let our deep learning model analyze your eye movement to detect signs of Parkinson's disease.</p>
+                </div>
+   
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-hospital"></i>
+                    </div>
+                    <h2>Neurologist Finder</h2>
+                    <p>Find neurologists in Tunisia, complete with contact details and locations to facilitate your next steps.</p>
+                </div>
+   
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-desktop"></i>
+                    </div>
+                    <h2>User-Friendly Interface</h2>
+                    <p>Easily navigate through recommendations and doctor listings with our intuitive interface.</p>
+                </div>
+            </div>
+        </div>
+
+       <!-- Tableau des neurologues -->
+<section id="neurologists-table">
+    <h2>neurologists table</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Location</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Dr Raif BOUKHDHIR</td>
+                <td>+216 99 194 119 / +216 93 304 048</td>
+                <td><a href="https://www.google.com/maps/search/Dr+Raif+BOUKHDHIR%2C+Cit%C3%A9+Ennasr+2%2C+Ariana%2C+Tunisie" target="_blank">1er étage, Cabinet A 1-7, Violette Medical Center, Av. Hédi Nouira, Ariana 2037</a></td>
+            </tr>
+            <tr>
+                <td>Dr Najoua Miladi</td>
+                <td>+216 71 889 410 / +216 93 265 327</td>
+                <td><a href="https://www.google.tn/maps/place/Dr+Najoua+Miladi/@36.8424406,10.1619113,17z/data=!3m1!4b1!4m6!3m5!1s0x12fd33120138eef7:0xa7e82c70d0f43ba1!8m2!3d36.8424406!4d10.1644862!16s%2Fg%2F11j3wy872f?entry=ttu&g_ep=EgoyMDI1MDQwMS4wIKXMDSoASAFQAw%3D%3D" target="_blank">Maghreb Médical, 3 Avenue Du Roi Abdelaziz El Saoud, Tunis 2092</a></td>
+            </tr>
+            <tr>
+                <td>Dr Samia BEN YAHMED</td>
+                <td>+216 71 948 048 / +216 51 948 048</td>
+                <td><a href="https://www.google.com/maps/search/Dr+Samia+BEN+YAHMED%2C+Centre+Urbain+Nord%2C+Tunis%2C+Tunisie" target="_blank">R5XX+P9R, Tunis</a></td>
+            </tr>
+            <tr>
+                <td>Dr Ben Achour Bezzine Nedia</td>
+                <td>+216 96 057 131</td>
+                <td><a href="https://www.google.com/maps/search/Dr+Ben+Achour+Bezzine+Nedia%2C+Tunis%2C+Tunisie" target="_blank">Cab A0-5 Centre cléopâtre, Tunis 1082</a></td>
+            </tr>
+            <tr>
+                <td>Dr Nadia Ammar</td>
+                <td>+216 71 875 999 / +216 24 938 838</td>
+                <td><a href="https://www.google.com/maps/place/Dr+Nadia+Ammar,+neurologue,+ancienne+AHU+%C3%A0+l%E2%80%99Institut+National+de+Neurologie+La+Rabta/@36.8426219,10.1575693,17z/data=!3m1!4b1!4m6!3m5!1s0x12fd332641385237:0xa9a5257444ff3bb!8m2!3d36.8426219!4d10.1601442!16s%2Fg%2F11fk4dxwkv?entry=ttu&g_ep=EgoyMDI1MDQwMi4xIKXMDSoASAFQAw%3D%3D" target="_blank">2 Rue Tahar Sfar, Tunis 2092</a></td>
+            </tr>
+            <tr>
+                <td>Dr Mouna NAGUAZI</td>
+                <td>+216 58 663 940 / +216 77 270 759</td>
+                <td><a href="https://www.google.com/maps/place/Complexe+M%C3%A9dical+IBN+ROCHD/@35.6849953,10.0925909,17.71z/data=!4m6!3m5!1s0x12fdc58f3ecad32d:0x5a6ebf7fddd383f8!8m2!3d35.6849113!4d10.0940971!16s%2Fg%2F11p4b1c131?entry=ttu&g_ep=EgoyMDI1MDQxNC4xIKXMDSoASAFQAw%3D%3D" target="_blank">M3MV+XJ7, Av. de la République, Kairouan 3100</a></td>
+            </tr>
+            <tr>
+                <td>Dr Aissi Mouna</td>
+                <td>+216 71 433 630 / +216 20 472 929</td>
+                <td><a href="https://www.google.com/maps/place/Neurologue+Dr+Aissi+Mouna/@35.8550668,10.6123626,17z/data=!3m1!4b1!4m6!3m5!1s0x12fd8b3975d46cd3:0x3375b6b81cd7637d!8m2!3d35.8550625!4d10.6149375!16s%2Fg%2F11w854mkzj?entry=ttu&g_ep=EgoyMDI1MDQxNC4xIKXMDSoASAFQAw%3D%3D" target="_blank">VJ47+2XG, Sousse 4051</a></td>
+            </tr>
+            <tr>
+                <td>Dr Jalel EL OUNI</td>
+                <td>+216 70 221 817 / +216 42 201 300</td>
+                <td><a href="https://www.google.com/maps/place/Neurologue+Dr+Jalel+El+Ouni/@35.8626648,10.6070101,17z/data=!3m1!4b1!4m6!3m5!1s0x12fd8b3f27de4faf:0x75ccd10e8d3a4404!8m2!3d35.8626648!4d10.609585!16s%2Fg%2F11wfk09jfy?entry=ttu&g_ep=EgoyMDI1MDQwMi4xIKXMDSoASAFQAw%3D%3D" target="_blank">VJ75+3V9, Sousse 4011</a></td>
+            </tr>
+            <tr>
+                <td>Dr Fedia JARDAK</td>
+                <td>+216 51 250 026 / +216 28 745 743</td>
+                <td><a href="https://www.google.com/maps/place/Cabinet+Dr+Fedia+Jardak+Neurologue/@36.4091016,10.1384658,17z/data=!3m1!4b1!4m6!3m5!1s0x12fd11b37413a233:0xabc3a3716f4f4382!8m2!3d36.4091016!4d10.1410407!16s%2Fg%2F11rhq220vq?entry=ttu&g_ep=EgoyMDI1MDQwMi4xIKXMDSoASAFQAw%3D%3D" target="_blank">Immeuble Nesrine derrière la Clinique de Zaghouan,RDC,App N°1, 1100</a></td>
+            </tr>
+            <tr>
+                <td>Dr Basma AYADI BESBES</td>
+                <td>+216 27 000 650 / +216 52 908 350</td>
+                <td><a href="https://www.google.com/maps/place/Docteur+Basma+Ayadi+Neurologue,+EEG,+EMG,+PEV/@36.864789,10.2876301,17z/data=!3m1!4b1!4m6!3m5!1s0x12e2b530b22b3d9d:0x72193b80898ca262!8m2!3d36.864789!4d10.290205!16s%2Fg%2F11m_lcw9s5?entry=ttu&g_ep=EgoyMDI1MDQwMi4xIKXMDSoASAFQAw%3D%3D" target="_blank">Le carrefour Médical, cabinet A1-8 Ain zaghouane Nord, Tunis Tunis, 2045</a></td>
+            </tr>
+        </tbody>
+    </table>
+</section>    
+    
+    <!-- Div pour afficher la carte -->
+    <div id="map"></div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        // Initialisation de la carte
+        var map = L.map('map').setView([36.83629428300772, 10.15985561361411], 13); // Coordonnées pour Tunis
+    
+        // Ajout du fond de carte OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+    
+        // Liste des neurologues avec leurs coordonnées et informations
+        var doctors = [
+            {
+                name: 'Dr Raif BOUKHDHIR',
+                lat: 36.86733865069241,
+                lon: 10.171014015345415,
+                phone: '+216 99 194 119 / +216 93 304 048',
+                location: 'Tunis, Tunisia'
+            },
+            {
+                name: 'Dr Najoua Miladi',
+                lat: 36.842742594843465,
+                lon: 10.164292937231373,
+                phone: '+216 71 889 410 / +216 93 265 327',
+                location: 'Tunis, Tunisia'
+            },
+            {
+                name: 'Dr Samia BEN YAHMED',
+                lat: 36.84948718052788,
+                lon: 10.198987143672179,
+                phone: '+216 71 948 048 / +216 51 948 048',
+                location: 'Tunis, Tunisia'
+            },
+            {
+                name: 'Dr Ben Achour Bezzine Nedia',
+                lat: 36.84591174344907,
+                lon: 10.199850809272393,
+                phone: '+216 96 057 131',
+                location: 'Tunis, Tunisia'
+            },
+            {
+                name: 'Dr Nadia Ammar',
+                lat: 36.84250309229147,
+                lon: 10.16004144418177,
+                phone: '+216 71 875 999 / +216 24 938 838',
+                location: 'Tunis, Tunisia'
+            },
+            {
+                name: 'Dr Mouna NAGUAZI',
+                lat: 35.6851117300121,
+                lon: 10.094268761381663,
+                phone: '+216 58 663 940 / +216 77 270 759',
+                location: 'Tunis, Tunisia'
+            },
+            {
+                name: 'Dr Aissi Mouna',
+                lat: 35.85515380516775,
+                lon: 10.614894584657444,
+                phone: '+216 71 433 630 / +216 20 472 929',
+                location: 'Tunis, Tunisia'
+            },
+            {
+                name: 'Dr Jalel EL OUNI',
+                lat: 35.86261388311211,
+                lon: 10.609654126981875,
+                phone: '+216 70 221 817 / +216 42 201 300',
+                location: 'Tunis, Tunisia'
+            },
+            {
+                name: 'Dr Fedia JARDAK',
+                lat: 36.40895947665272,
+                lon: 10.140532071163646,
+                phone: '+216 51 250 026 / +216 28 745 743',
+                location: 'Tunis, Tunisia'
+            },
+            {
+                name: 'Dr Basma AYADI BESBES',
+                lat: 36.864981587154205,
+                lon: 10.29031901163646,
+                phone: '+216 27 000 650 / +216 52 908 350',
+                location: 'Tunis, Tunisia'
+            }
+        ];
+    
+        // Ajout des marqueurs pour chaque neurologue
+        doctors.forEach(function(doctor) {
+            L.marker([doctor.lat, doctor.lon]).addTo(map)
+                .bindPopup('<strong>' + doctor.name + '</strong><br>' +
+                           'Location: ' + doctor.location + '<br>' +
+                           'Phone: ' + doctor.phone)
+                .openPopup();
+        });
+    </script>
+
+
+
+ 
+
+    
+    
+
+
+
+    <footer>
+        <p>&copy; 2025 NeuroVision</p>
+    </footer>
+
+
+   
+</body>
+</html>
+
+
+
 
