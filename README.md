@@ -8,15 +8,15 @@ A Deep Learning Web Application for Parkinson’s Detection via Eye Movement Ana
 # 🌟 Overview
 NeuroVision is a Flask-based web application that uses a deep learning model to detect Parkinson’s disease from eye movement images. Built for neurologists and medical researchers, it provides:
 
-# ⚡ Real-time AI predictions: Instantly classify images as Parkinson’s Detected or No Parkinson’s
+⚡ Real-time AI predictions: Instantly classify images as Parkinson’s Detected or No Parkinson’s
 
-# 🔐 User authentication: Secure login/signup using a SQLite database
+🔐 User authentication: Secure login/signup using a SQLite database
 
-# 🧭 Neurologist locator: Search and locate specialists via an interactive map
+🧭 Neurologist locator: Search and locate specialists via an interactive map
 
-# 💻 Modern UI: Responsive single-page interface with a sleek glassmorphism design
+💻 Modern UI: Responsive single-page interface with a sleek glassmorphism design
 
-# 🔬 Developed as part of a research project to bridge AI and clinical diagnosis.
+🔬 Developed as part of a research project to bridge AI and clinical diagnosis.
 
 
 # 🛠️ Tech Stack
