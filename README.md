@@ -31,7 +31,7 @@ NeuroVision is a Flask-based web application that uses a deep learning model to 
 
 
 
-#🚀 Features
+# 🚀 Features
 # 1. 🧑‍💻 User-Friendly Interface
 Single-page layout for seamless experience
 
